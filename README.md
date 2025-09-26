@@ -1,1 +1,1 @@
-# RISC-V-ISA-Toolchain-Week-02
+# RISC-V-ISA-Toolchain-Week-2
