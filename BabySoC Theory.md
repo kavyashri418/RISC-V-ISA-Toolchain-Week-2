@@ -1,4 +1,4 @@
-## System on Chip (SoC)
+# System on Chip (SoC)
 
 System-on-Chip (SoC) technology has become the foundational element of modern electronic products, enabling high performance, miniaturization, and enhanced reliability. Whether in large-scale systems such as data centers and servers or compact devices like smartphones, wearables, and sensor nodes, SoCs provide the essential computational and control capabilities required for efficient operation. They process both analog and digital signals, perform complex computations, store the processed data, and generate meaningful outputs to control external hardware or deliver information to users. A typical SoC integrates numerous logic blocks and functional units—CPU cores, memory blocks, communication interfaces, DSP engines, and power management units—onto a single silicon die. However, certain system-level components such as large display modules, mechanical keypads, antennas, and battery units generally remain external because they cannot be economically or physically implemented using CMOS or CMOS-compatible technologies such as Bi-CMOS, MEMS, or discrete memory technologies. Modern SoCs are far more advanced than the early generations, often containing hundreds of IP cores, on-chip interconnect networks, embedded memories, and expansion interfaces while operating at extremely low power. Their development demands a blend of digital VLSI design, mixed-signal custom design, and FPGA-based prototyping methodologies, making SoC design a multidisciplinary and technologically intensive process.
 
@@ -60,3 +60,91 @@ The demands of future day SoC designs are substantial. The convergence of multip
 <img width="335" height="212" alt="Screenshot 2025-11-19 005210" src="https://github.com/user-attachments/assets/83cb5eae-8060-4655-9b61-a6a94cae3069" />
 
 System-on-Chip (SoC) technology has become the backbone of modern electronic systems, enabling high performance, compact size, and efficient power consumption within a single integrated platform. With continued scaling, heterogeneous integration, emerging memory technologies, and AI-driven architectures, SoCs are evolving to meet the growing demands of computing, communication, and intelligent automation. Future trends such as 3D-IC stacking, chiplet-based design, and integration of CMOS with non-CMOS devices will further enhance capability and flexibility. Overall, SoCs will continue to drive innovation across consumer electronics, IoT, automotive, data centers, and edge AI applications.
+
+
+# Introduction to VSDBabySoC
+
+VSDBabySoC is a compact yet powerful RISC-V-based System-on-Chip (SoC) designed primarily to integrate and test three fully open-source IP cores together for the first time. It serves as an educational, experimental, and proof-of-concept platform for open-source silicon development.
+The SoC consists of three key components:
+- RVMYTH microprocessor – A simple RISC-V CPU.
+- 8× PLL (Phase-Locked Loop) – Generates a stable and higher-frequency clock.
+- 10-bit DAC (Digital-to-Analog Converter) – Interfaces with analog devices.
+This combination makes VSDBabySoC an ideal minimal SoC for learning, modeling, simulation, and physical design using open-source tools on the Sky130 process.
+
+<img width="2270" height="1260" alt="image" src="https://github.com/user-attachments/assets/42272eb9-657e-42ab-907b-d850aeeeb087" />
+
+### Problem Statement
+The VSDBabySoC project focuses on designing and integrating a compact SoC around the RVMYTH RISC-V processor core. The SoC relies on an on-chip PLL for clock generation and a 10-bit DAC to communicate with external analog hardware.
+Devices such as televisions, mobile phones, speakers, and other systems that accept analog input can interpret the DAC output and convert it into audio or visual signals.
+The SoC is fabricated using the Sky130 open-source PDK, making it fully accessible for academic, learning, and hobbyist use.
+
+### What is an SoC?
+A System-on-Chip is a complete electronic system integrated on a single silicon die.
+It contains various IP cores such as:
+- Microprocessors / CPUs (digital)
+- Memories (SRAM, ROM)
+- Analog and RF blocks
+- Communication units (USB, SPI, I2C, modems)
+- Peripheral interfaces
+- SoCs combine digital, analog, and mixed-signal components to form a full standalone solution.
+
+### RVMYTH
+RVMYTH is a simple RISC-V-based CPU core developed during a VSD–RedwoodEDA workshop.
+Key points:
+- Designed using TL-Verilog, a modern timing-abstract design language.
+- Created in only 5 days by students, including beginners.
+- Fully open-source with continuous student contributions.
+- Converted to Verilog using SandPiper-SaaS for integration into SoC design flows.
+- RVMYTH demonstrates how accessible open-source CPU design can be, even for new learners.
+
+<img width="959" height="655" alt="image" src="https://github.com/user-attachments/assets/892f08e4-b021-4171-bf4f-d57a715d48dd" />
+
+### PLL
+A Phase-Locked Loop (PLL) is a control system that generates a stable, high-frequency clock signal synchronized to a reference input.
+In VSDBabySoC, the 8× PLL multiplies the input clock, ensuring:
+- Stable system timing
+- Reliable processor operation
+- Proper synchronization across the SoC
+- PLLs are essential in modern SoCs for clocking, synchronization, and frequency scaling.
+
+<img width="1027" height="331" alt="image" src="https://github.com/user-attachments/assets/0a0d929f-ca77-4e8c-af98-ee0b10ff0cb6" />
+
+### DAC
+A Digital-to-Analog Converter (DAC) converts digital values into continuous analog signals.
+Applications include:
+- Audio generation
+- Video signal processing
+- Communication systems
+- Sensor interfacing
+The 10-bit DAC in VSDBabySoC provides analog output values based on RVMYTH’s computation results.
+
+<img width="740" height="446" alt="image" src="https://github.com/user-attachments/assets/45269f60-1b33-4140-9f9c-8a0c4aa9cf8d" />
+
+### VSDBabySoC Modeling and Simulation
+The SoC is modeled and simulated using the following workflow:
+- Icarus Verilog (iverilog) is used to compile and simulate the Verilog modules.
+- GTKWave visualizes the waveforms.
+- Initial input signals activate the PLL.
+- The PLL generates a stable system clock.
+- The RVMYTH processor executes instructions stored in its instruction memory (imem).
+- During execution, register r17 is sequentially updated with new values.
+- These values feed into the DAC.
+- The DAC outputs an analog-equivalent signal named OUT.
+
+Thus, the SoC integrates:
+- 3 IP cores (RVMYTH, PLL, DAC)
+- 1 wrapper module
+- 1 testbench for simulation
+All together, these demonstrate a complete mini-SoC.
+
+### RVMYTH Modeling
+Since RVMYTH is written in TL-Verilog, it must be converted to Verilog before integration.
+- SandPiper-SaaS performs this TL-Verilog → Verilog transformation.
+- The referenced repository provides guidance for modeling and testing the CPU.
+This allows the CPU to be synthesized, simulated, and included in the SoC.
+
+### PLL and DAC Modeling
+Analog circuits cannot be synthesized using Verilog, but they can be modeled behaviorally using real-number modeling.
+- Behavioral models of PLL and DAC are taken from open-source reference repositories.
+- These models mimic analog behavior sufficiently for digital-level SoC simulation.
+During physical design, the PLL model was improved and adapted into a new version named AVSDPLL to meet real IP requirements.
